@@ -13,3 +13,6 @@ Ich habe eine App entwickelt, die Menschen mit Symptomen erfasst und deren Geolo
 
 ID: 0193	
 Schlüssel: 0038
+
+**Links zur Zusammenarbeit**
+* https://docs.google.com/spreadsheets/d/1fvDjJNG5-orGQ_hK3Jht88QdtHbhAKJ4qg7g3f_lrGs/edit?usp=sharing
