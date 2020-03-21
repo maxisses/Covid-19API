@@ -1,0 +1,21 @@
+---
+- name: "Copy aggregator script to host"
+  copy:
+    src: ../../../../fillDatabase/aggregate.py
+    dest: "{{ project_remote_dir }}"
+    owner: ubuntu # CHANGE
+    mode: '0644'
+
+- name: Install cron
+  become: yes
+  apt:
+    name: cron
+    update_cache: yes
+
+- name: Enable aggregator script that runs at midnight every day
+  become: yes
+  cron:
+    name: "Aggregate case data"
+    minute: 0
+    hour: 0
+    job: "{{ aggregator_command }} > /dev/null 2>&1"
