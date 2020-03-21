@@ -4,7 +4,7 @@
     src: ../../../../fillDatabase/aggregate.py
     dest: "{{ project_remote_dir }}"
     owner: ubuntu # CHANGE
-    mode: '0644'
+    mode: '0755'
 
 - name: Install cron
   become: yes

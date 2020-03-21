@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-* ansible playbook that provisions a cron-job that runs every midnight and should trigger aggregator
-and routines
+* ansible playbook that provisions a cron-job that runs every midnight and should trigger aggregator and routines
+* ansible role to install docker and docker-compose
 
 [Unreleased]: https://github.com/maxisses/Covid-19API/compare/feature/add-aggregation-cron-job?expand=1
