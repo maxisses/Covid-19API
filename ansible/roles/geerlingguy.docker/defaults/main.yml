@@ -28,4 +28,6 @@ docker_yum_repo_enable_test: '0'
 docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
-docker_users: []
+docker_users: 
+  - root
+  - ubuntu
