@@ -21,8 +21,9 @@ def writeToTable(content):
         cur.execute("""
             INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start, age_group_end, extraction_date)
                 VALUES
-                (1, 'Bayern', 'M', 3, 'bla', 123, date'2020-01-01', 1, 12, 20, 30, date'2020-03-21')
-        """)
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """, (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start..split("-")[0], age_group_end.split("-")[1], extraction_date)
+        )
 
         conn.commit()
 
