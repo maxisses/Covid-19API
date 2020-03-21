@@ -3,6 +3,7 @@ from flask import jsonify
 from flask import request
 from flask import render_template
 import psycopg2
+import psycopg2.extras
 
 app = Flask(__name__)
 
@@ -84,17 +85,13 @@ def create_app():
         date_range = request.args.get('date_range')
 
         conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
-        cur = conn.cursor()
+        cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
-        cur.execute("""SELECT %(state)s FROM rki_data_germany GROUP BY 1""", [state])
+        cur.execute("""SELECT state, province, sum(case_count) FROM rki_data_germany WHERE state=%s AND province=%s GROUP BY 1, 2""", [state, province])
         rows = cur.fetchall()
-        
-        """ dict_filter= ["country", "date", "total_cases"]
-        for el in my_selection:
-            response.append({my_key: el[my_key] for my_key in dict_filter}) """
 
         if len(rows) == 0:
-            return jsonify({"message": "error"})
+            return jsonify({"message": "error or no values"})
         else:
             return jsonify(rows)
 
