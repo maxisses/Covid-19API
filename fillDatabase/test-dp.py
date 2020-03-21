@@ -1,6 +1,7 @@
 import psycopg2
 import requests
-import datetime
+from datetime import datetime
+import re
 
 def downloadData():
     offsets = [0, 2000, 4000, 6000, 8000] #@TODO as long as result > 0
@@ -10,49 +11,61 @@ def downloadData():
         r = requests.get(url, allow_redirects=True)
         json_tmp = r.json()
         #open("rki_data/" + str(offset) +'-rki.json', 'wb').write(json_tmp)
-        json_files.append(json_tmp)
-        cleanedColumns = cleanUpData(json_files)
+        cleanedColumns = cleanUpData(json_tmp["features"])
         writeToTable(cleanedColumns)
 
 def cleanUpData(json_files):
-    all_case_objects = []
-    for json_file in json_files:
-        for item in json_file["features"]:
-            all_case_objects.append(item["attributes"])
+    result = []
+    for attributes in json_files:
 
-    state_id = []
-    state = []
-    gender = []
-    province_id = []
-    province = []
-    object_id = []
-    reported_date = []
-    death_count = []
-    case_count = []
-    age_group_start = []
-    age_group_end = []
-    extraction_date = []
+        ### parse age group
+        age_group_start = None
+        age_group_end = None
+        
+        if attributes["attributes"]["Altersgruppe"] == 'unbekannt':
+            age_group_start = 'null'
+            age_group_end = 'null'
+        elif attributes["attributes"]["Altersgruppe"] == 'A80+':
+            age_group_start='80'
+            age_group_end='99'
+        else:
+            age_group = re.search('A([0-9]*)-A([0-9]*)', attributes["attributes"]["Altersgruppe"], re.IGNORECASE)
+            age_group_start = age_group.group(1)
+            age_group_end = age_group.group(2)
 
-    for case in all_case_objects:
-        state_id.append(case['IdBundesland'])
-        state.append(case['Bundesland'])
-        gender.append(case['Geschlecht'])
-        province.append(case['Landkreis'])
-        province_id.append(case['IdLandkreis'])
-        object_id.append(case['ObjectId'])
-        reported_date.append(case['Meldedatum'])
-        death_count.append(case['AnzahlTodesfall'])
-        case_count.append(case['AnzahlFall'])
-        age_group_start.append(case['Altersgruppe'].split("-")[0][1:])
-        try:
-            age_group_end.append(case['Altersgruppe'].split("-")[1][1:])
-        except:
-            age_group_end.append(None)
-        extraction_date = datetime.datetime.today()
+        ### parse notification_date
+        ts = int(int(attributes["attributes"]["Meldedatum"])/1000)
+        notification_date = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
 
-    all_columns = [state_id,state, gender, province_id, province, object_id, reported_date, death_count, case_count, age_group_start, age_group_end, extraction_date ]
-    
-    return(all_columns)
+        item = {
+            'state_id': ParseInt(attributes["attributes"]["IdBundesland"]),
+            'state': attributes["attributes"]["Bundesland"],
+            'sex': attributes["attributes"]["Geschlecht"],
+            'province_id': ParseInt(attributes["attributes"]["IdLandkreis"]),
+            'province': attributes["attributes"]["Landkreis"],
+            'object_id': int(attributes["attributes"]["ObjectId"]),
+            'notification_date': notification_date,
+            'death_count': int(attributes["attributes"]["AnzahlTodesfall"]),
+            'case_count': int(attributes["attributes"]["AnzahlFall"]),
+            'age_group_start': age_group_start,
+            'age_group_end': age_group_end
+        }
+
+        if item["state"] == '-nicht erhoben-':
+            item["state"] = ""
+
+        if item["province"] == '-nicht erhoben-':
+            item["province"] = ""
+
+        result.append(item)
+    return result
+
+def ParseInt(s):
+    try: 
+        return int(s)
+    except ValueError:
+        return -1
+
 
 def writeToTable(content):
     try:
@@ -60,13 +73,28 @@ def writeToTable(content):
 
         cur = conn.cursor()
 
-        cur.execute("""
-            INSERT INTO rki_data_germany (state_id,state, gender, province_id, province, object_id, reported_date, death_count, case_count, age_group_start, age_group_end, extraction_date )
-                VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """, (content)
-        )
+        for item in content:
+            query = """
+                INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start, age_group_end, extraction_date)
+                    VALUES
+                    ({}, '{}', '{}', {}, '{}', {}, date'{}', {}, {}, {}, {}, now())
+                """.format(
+                    item['state_id'],
+                    item['state'],
+                    item['sex'],
+                    item['province_id'],
+                    item['province'],
+                    item['object_id'],
+                    item['notification_date'],
+                    item['death_count'],
+                    item['case_count'],
+                    item['age_group_start'],
+                    item['age_group_end']
+                )
 
+            cur.execute(query)
+            
+        cur.close()
         conn.commit()
 
     except (Exception, psycopg2.DatabaseError) as error:
