@@ -1,5 +1,6 @@
 import psycopg2
 import requests
+import re
 
 def downloadData():
     offsets = [0, 2000, 4000, 6000, 8000] #@TODO as long as result > 0
@@ -9,12 +10,25 @@ def downloadData():
         r = requests.get(url, allow_redirects=True)
         json_tmp = r.json()
         #open("rki_data/" + str(offset) +'-rki.json', 'wb').write(json_tmp)
-        writeToTable(json_tmp["features"])
+        cleanUpData(json_tmp["features"])
 
+def cleanUpData(json_data):
+    result = []
+    for attributes in json_data:
+
+        ### parse age group
+        age_group = attributes["attributes"]["Altersgruppe"]
+        re.search('A(.*)-A(.*)')
+
+        item = {
+            'age_group_start': age_group,
+            'age_group_end': age_group
+        }
+        
 
 def writeToTable(content):
     try:
-        conn = psycopg2.connect("host= dbname=wirvsvirus user=wirvsvirus password=")
+        conn = psycopg2.connect("")
 
         cur = conn.cursor()
 
