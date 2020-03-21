@@ -2,14 +2,13 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from flask import render_template
+import psycopg2
 
 app = Flask(__name__)
-
 
 def create_app():
     """
     Create a Flask application using the app factory pattern.
-
     :param settings_override: Override settings
     :return: Flask app
     """
@@ -45,6 +44,26 @@ def create_app():
             }
         ]
 
+    """ 
+    mögliche Endpunkte der technischen Schnittstelle (API):
+
+    Zahlen:
+
+    get_cases (parameter = zeitraum, nation, bundesland, city, gender, agegroup ... )
+    --> haben wir nich; get_recovered_per_day ( -,,-)
+    --> haben wir nich; get_all_recoverd ( -,,-)
+    get_active_cases ( -,,-)
+    get_prediction ( -,,-)
+    --> basierend auf Regression oder mehr
+
+    Maßnahmen:
+
+    get_political_measures (returns = datum, name, beschreibung, ... ) (parameter = Zeitraum, nation, ...)
+    get_medical_measures (returns = name, beschreibung)
+    --> im Kontext Ibuprofen eingeschränkt, in die Zukunft: impstoff gefunden, etc.
+    """
+
+
     @app.route('/')
     def index():
         """
@@ -53,19 +72,31 @@ def create_app():
         return render_template("index.html")
 
     # GET /get_total_cases
+    # (parameter = zeitraum, nation, bundesland, city, gender, agegroup ... )
     @app.route("/get_total_cases")
     def get_total_cases():
-        country = request.args.get('country')
-        response = []
-        my_selection = filter(lambda x: x['country'] == country, cases)
-        dict_filter= ["country", "date", "total_cases"]
-        for el in my_selection:
-            response.append({my_key: el[my_key] for my_key in dict_filter})
+        state = request.args.get('state')
+        province = request.args.get('province')
+        sex = request.args.get('sex')
+        age_group_start = request.args.get('age_group_start')
+        age_group_end = request.args.get('age_group_end')
+        extraction_date = request.args.get('extraction_date')
+        date_range = request.args.get('date_range')
 
-        if len(response) == 0:
-            return jsonify(cases)
+        conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
+        cur = conn.cursor()
+
+        cur.execute("""SELECT %(state)s FROM rki_data_germany GROUP BY 1""", [state])
+        rows = cur.fetchall()
+        
+        """ dict_filter= ["country", "date", "total_cases"]
+        for el in my_selection:
+            response.append({my_key: el[my_key] for my_key in dict_filter}) """
+
+        if len(rows) == 0:
+            return jsonify({"message": "error"})
         else:
-            return jsonify(response)
+            return jsonify(rows)
 
     # GET /get_active_cases
     @app.route("/get_active_cases")
@@ -86,6 +117,7 @@ def create_app():
     @app.route("/get_died_cases")
     def get_died_cases():
         country = request.args.get('country')
+
         response = []
         my_selection = filter(lambda x: x['country'] == country, cases)
         dict_filter= ["country", "date", "died_cases"]
