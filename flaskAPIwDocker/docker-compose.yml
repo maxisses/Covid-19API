@@ -10,4 +10,16 @@ services:
     ports:
       - '5000:5000'
     volumes:
+
       - '.:/app'
+    depends_on:
+      - postgresql
+
+
+  postgresql:
+    image: postgres
+    restart: always
+    environment:
+      - database.env
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
