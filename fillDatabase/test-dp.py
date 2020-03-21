@@ -1,6 +1,6 @@
 import psycopg2
 import requests
-import re
+import datetime
 
 def downloadData():
     offsets = [0, 2000, 4000, 6000, 8000] #@TODO as long as result > 0
@@ -10,20 +10,49 @@ def downloadData():
         r = requests.get(url, allow_redirects=True)
         json_tmp = r.json()
         #open("rki_data/" + str(offset) +'-rki.json', 'wb').write(json_tmp)
-        cleanUpData(json_tmp["features"])
+        json_files.append(json_tmp)
+        cleanedColumns = cleanUpData(json_files)
+        writeToTable(cleanedColumns)
 
-def cleanUpData(json_data):
-    result = []
-    for attributes in json_data:
+def cleanUpData(json_files):
+    all_case_objects = []
+    for json_file in json_files:
+        for item in json_file["features"]:
+            all_case_objects.append(item["attributes"])
 
-        ### parse age group
-        age_group = attributes["attributes"]["Altersgruppe"]
-        re.search('A(.*)-A(.*)')
+    state_id = []
+    state = []
+    gender = []
+    province_id = []
+    province = []
+    object_id = []
+    reported_date = []
+    death_count = []
+    case_count = []
+    age_group_start = []
+    age_group_end = []
+    extraction_date = []
 
-        item = {
-            'age_group_start': age_group,
-            'age_group_end': age_group
-        }
+    for case in all_case_objects:
+        state_id.append(case['IdBundesland'])
+        state.append(case['Bundesland'])
+        gender.append(case['Geschlecht'])
+        provinces.append(case['Landkreis'])
+        province_id.append(case['IdLandkreis'])
+        object_ids.append(case['ObjectId'])
+        reported_date.append(case['Meldedatum'])
+        death_count.append(case['AnzahlTodesfall'])
+        case_count.append(case['AnzahlFall'])
+        age_group_start.append(case['Altersgruppe'].split("-")[0][1:])
+        try:
+            age_group_end.append(case['Altersgruppe'].split("-")[1][1:])
+        except:
+            age_group_end.append(None)
+        extraction_date = datetime.datetime.today()
+
+    all_columns = [state_id,state, gender, province_id, province, object_id, reported_date, death_count, case_count, age_group_start, age_group_end, extraction_date ]
+    
+    return(all_columns)
         
 
 def writeToTable(content):
@@ -33,10 +62,10 @@ def writeToTable(content):
         cur = conn.cursor()
 
         cur.execute("""
-            INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start, age_group_end, extraction_date)
+            INSERT INTO rki_data_germany (state_id,state, gender, province_id, province, object_id, reported_date, death_count, case_count, age_group_start, age_group_end, extraction_date )
                 VALUES
                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """, (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start..split("-")[0], age_group_end.split("-")[1], extraction_date)
+        """, (content)
         )
 
         conn.commit()
