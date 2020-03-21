@@ -80,19 +80,74 @@ def create_app():
         province = request.args.get('province')
         sex = request.args.get('sex')
         age_group_start = request.args.get('age_group_start')
+
+        try:
+            age_group_start = int(age_group_start)
+        except:
+            pass
         age_group_end = request.args.get('age_group_end')
+
+        try:
+            age_group_end = int(age_group_end)
+        except:
+            pass
         extraction_date = request.args.get('extraction_date')
         date_range = request.args.get('date_range')
+
+        date_range_start = None
+        date_range_end = None
+        try:
+            date_range = date_range.split(" ")
+            print(date_range)
+            if len(date_range) > 1:
+                date_range_start = date_range[0]
+                date_range_end = date_range[1]
+            else:
+                date_range_start = date_range[0]
+                date_range_end = date_range[0]
+        except:
+            pass
+
+        
 
         conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
         cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
-        cur.execute("""SELECT state, province, sum(case_count) FROM rki_data_germany WHERE state=%s AND province=%s GROUP BY 1, 2""", [state, province])
+        selection = {"extraction_date": extraction_date,"state":state, "province":province, "sex": sex, 
+                    "age_group_start":age_group_start, "age_group_end": age_group_end}
+
+        columns = []
+        for key, value in selection.items():
+            if value:
+                columns.append(key)
+        columns = ", ".join(columns)
+        print(columns)
+
+        
+        selection["date_range_start"] = date_range_start
+        selection["date_range_end"] = date_range_end
+
+        print(selection)
+        cur.execute(""" SELECT {} , sum(case_count) 
+                        FROM rki_data_germany 
+                            WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
+                            AND (state = %(state)s OR %(state)s IS NULL )
+                            AND (province = %(province)s OR %(province)s IS NULL)
+                            AND (sex = %(sex)s OR %(sex)s IS NULL)
+                            AND (age_group_start >= %(age_group_start)s OR %(age_group_start)s IS NULL)
+                            AND (age_group_end <= %(age_group_end)s OR %(age_group_end)s IS NULL)
+                            AND ((notification_date BETWEEN %(date_range_start)s AND %(date_range_end)s) OR %(date_range_start)s IS NULL)
+                            GROUP BY {}""".format(columns, columns), 
+                            selection)
+
         rows = cur.fetchall()
 
         if len(rows) == 0:
             return jsonify({"message": "error or no values"})
         else:
+            if date_range_start:
+                rows[0]["from"] = date_range_start
+                rows[0]["to"] = date_range_end
             return jsonify(rows)
 
     # GET /get_active_cases
