@@ -4,7 +4,7 @@ import datetime
 
 def downloadData():
     offsets = [0, 2000, 4000, 6000, 8000] #@TODO as long as result > 0
-
+    print("Lets start ...")
     for offset in offsets:
         url = 'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?f=json&where=1%3D1&outFields=*&resultOffset='+str(offset)
         r = requests.get(url, allow_redirects=True)
@@ -37,9 +37,9 @@ def cleanUpData(json_files):
         state_id.append(case['IdBundesland'])
         state.append(case['Bundesland'])
         gender.append(case['Geschlecht'])
-        provinces.append(case['Landkreis'])
+        province.append(case['Landkreis'])
         province_id.append(case['IdLandkreis'])
-        object_ids.append(case['ObjectId'])
+        object_id.append(case['ObjectId'])
         reported_date.append(case['Meldedatum'])
         death_count.append(case['AnzahlTodesfall'])
         case_count.append(case['AnzahlFall'])
@@ -53,11 +53,10 @@ def cleanUpData(json_files):
     all_columns = [state_id,state, gender, province_id, province, object_id, reported_date, death_count, case_count, age_group_start, age_group_end, extraction_date ]
     
     return(all_columns)
-        
 
 def writeToTable(content):
     try:
-        conn = psycopg2.connect("")
+        conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
 
         cur = conn.cursor()
 
