@@ -1,0 +1,3 @@
+---
+project_remote_dir: /home/ubuntu # CHANGE
+aggregator_command: ./aggregate.py
