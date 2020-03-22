@@ -6,11 +6,10 @@ services:
     command: >
       gunicorn -c gunicorn.py --reload "hello.app:create_app()"
     env_file:
-      - '.env'
+      - 'flask.env'
     ports:
       - '5000:5000'
     volumes:
-
       - '.:/app'
     depends_on:
       - postgresql
@@ -19,7 +18,10 @@ services:
   postgresql:
     image: postgres
     restart: always
-    environment:
-      - database.env
+    env_file:
+      - 'database.env'
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  postgres:
