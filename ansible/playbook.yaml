@@ -1,6 +1,8 @@
 ---
 - hosts: all
-  remote_user: user #TODO
+  remote_user: ubuntu # CHANGE
   become_user: root
   roles:
     - role: cron-job
+    - role: geerlingguy.docker
+    - role: flask-api

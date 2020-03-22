@@ -1,0 +1,4 @@
+---
+project_remote_dir: /home/ubuntu # CHANGE
+api_image_name: flaskapiwdocker_web_1
+postgres_image_name: flaskapiwdocker_postgresql_1

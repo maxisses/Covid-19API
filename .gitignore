@@ -1,12 +1,7 @@
 nodeAPI
-
+**/__pycache__/
 # Created by https://www.gitignore.io/api/go,code,linux,macos,windows,eclipse,jetbrains
 # Edit at https://www.gitignore.io/?templates=go,code,linux,macos,windows,eclipse,jetbrains
-
-### Build Artifacts & Generated Stuff ###
-fenrir
-deployment/e2e-k8s-job/*.yaml
-venv
 
 ### Code ###
 .vscode/*

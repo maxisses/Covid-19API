@@ -1,2 +1,4 @@
-[targets]
+[remote]
+35.180.178.217 # CHANGE
+[local]
 localhost ansible_connection=local
