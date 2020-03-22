@@ -94,7 +94,6 @@ def write_to_table(content):
 
         ######
         queryCreate = """
-        DROP TABLE rki_data_germany;
         CREATE TABLE IF NOT EXISTS public.rki_data_germany
         (
             id bigserial NOT NULL,
