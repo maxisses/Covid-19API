@@ -103,7 +103,7 @@ def create_app():
         date_range_end = None
         try:
             date_range = date_range.split(" ")
-            print(date_range)
+            print("fetching the diff between two dates: " + " ".join(date_range))
             if len(date_range) > 1:
                 date_range_start = date_range[0]
                 date_range_end = date_range[1]
@@ -130,7 +130,36 @@ def create_app():
         selection["date_range_start"] = date_range_start
         selection["date_range_end"] = date_range_end
 
-        print(selection)
+                ### get the numbers for the end
+        cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
+                        FROM rki_data_germany 
+                            WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
+                            AND (state = %(state)s OR %(state)s IS NULL )
+                            AND (province = %(province)s OR %(province)s IS NULL)
+                            AND (sex = %(sex)s OR %(sex)s IS NULL)
+                            AND (age_group_start >= %(age_group_start)s OR %(age_group_start)s IS NULL)
+                            AND (age_group_end <= %(age_group_end)s OR %(age_group_end)s IS NULL)
+                            AND ((notification_date <= %(date_range_end)s) OR %(date_range_end)s IS NULL)
+                            GROUP BY {}""".format(columns, columns), 
+                            selection)
+
+        rows_end = cur.fetchall()
+
+        ### get the numbers for the start date
+        cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
+                        FROM rki_data_germany 
+                            WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
+                            AND (state = %(state)s OR %(state)s IS NULL )
+                            AND (province = %(province)s OR %(province)s IS NULL)
+                            AND (sex = %(sex)s OR %(sex)s IS NULL)
+                            AND (age_group_start >= %(age_group_start)s OR %(age_group_start)s IS NULL)
+                            AND (age_group_end <= %(age_group_end)s OR %(age_group_end)s IS NULL)
+                            AND ((notification_date <= %(date_range_start)s) OR %(date_range_start)s IS NULL)
+                            GROUP BY {}""".format(columns, columns), 
+                            selection)
+
+        rows_start = cur.fetchall()
+
         cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
                         FROM rki_data_germany 
                             WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
@@ -149,6 +178,10 @@ def create_app():
             return jsonify({"message": "error or no values"})
         else:
             if date_range_start:
+                print(rows_end[0]["infected"])
+                print(rows_start[0]["infected"])
+                rows[0]["diff_infected"] =  rows_end[0]["infected"] - rows_start[0]["infected"]
+                rows[0]["diff_deceased"] =  rows_end[0]["deceased"] - rows_start[0]["deceased"]
                 rows[0]["from"] = date_range_start
                 rows[0]["to"] = date_range_end
             return jsonify(rows)
@@ -258,31 +291,8 @@ def create_app():
 
         return None
 
-    # GET /get_diff_from_to
-    @app.route("/get_diff_from_to")
-    def get_get_diff_from_to():
-        state = request.args.get('state')
-        province = request.args.get('province')
-        sex = request.args.get('type')
-        age_group_start = request.args.get('description')
-        extraction_date = request.args.get('extraction_date')
-        date_range = request.args.get('date_range')
 
-        date_range_start = None
-        date_range_end = None
-        try:
-            date_range = date_range.split(" ")
-            print(date_range)
-            if len(date_range) > 1:
-                date_range_start = date_range[0]
-                date_range_end = date_range[1]
-            else:
-                date_range_start = date_range[0]
-                date_range_end = date_range[0]
-        except:
-            pass
-
-        return None
+    #############################
 
     def handle_extraction_date(date):
         if date:

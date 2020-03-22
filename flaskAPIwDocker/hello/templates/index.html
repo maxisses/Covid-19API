@@ -1,5 +1,6 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <script type="text/javascript">
 	function httpGetAsync(theUrl, callback) {
 	    var xmlHttp = new XMLHttpRequest();
@@ -11,9 +12,9 @@
 	    xmlHttp.send(null);
 	}
 
-	httpGetAsync("http://127.0.0.1:5000/get_total_cases", function(response) {
-		console.log(response);
-	})
+	// httpGetAsync("http://127.0.0.1:5000/get_cases", function(response) {
+	//	console.log(response);
+	// })
 </script>
 </head>
 <body>
@@ -23,10 +24,9 @@
 	<br>
 	Try:
 	<ul>
-	<li>/get_total_cases</li>
-	<li>/get_total_cases?country=France</li>
-	<li>/get_total_cases?country=France</li>
-	<li>/get_active_cases?country=Germany</li>
+	<li>/get_totals</li>
+	<li>/get_data</li>
+	<li>/get_events</li>
 	...
 	</ul>
 </div>
