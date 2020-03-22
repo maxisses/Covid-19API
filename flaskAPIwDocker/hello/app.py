@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -113,7 +114,14 @@ def create_app():
         except:
             pass
 
-        conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
+        dbname = os.environ['DB_DATABASE']
+        user = os.environ['DB_USER']
+        password = os.environ['DB_PASSWORD']
+        host = os.environ['DB_HOST']
+
+        print(dbname, user, password, host)
+
+        conn = psycopg2.connect("dbname='{}' user='{}' host='{}' password='{}'".format(dbname, user, host, password))
         cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
         selection = {"extraction_date": extraction_date,"state":state, "province":province, "sex": sex, 
