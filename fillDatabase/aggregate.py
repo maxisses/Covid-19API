@@ -85,7 +85,8 @@ def write_to_table(content):
 
         for item in content:
             query = """
-                INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start, age_group_end, extraction_date)
+                INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date,
+                death_count, case_count, age_group_start, age_group_end, extraction_date)
                     VALUES
                     ({}, '{}', '{}', {}, '{}', {}, date'{}', {}, {}, {}, {}, now())
                 """.format(
