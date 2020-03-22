@@ -91,6 +91,51 @@ def write_to_table(content):
 
         cur = conn.cursor()
 
+
+        ######
+        queryCreate = """
+        DROP TABLE rki_data_germany;
+        CREATE TABLE IF NOT EXISTS public.rki_data_germany
+        (
+            id bigserial NOT NULL,
+            object_id bigint NOT NULL,
+            state_id integer,
+            state varchar(256),
+            province_id integer,
+            province varchar(256),
+            sex "char",
+            age_group_start integer,
+            age_group_end integer,
+            death_count integer,
+            case_count integer,
+            notification_date date,
+            extraction_date date NOT NULL,
+            PRIMARY KEY (id)
+        )
+        WITH (
+            OIDS = FALSE
+        );
+
+        CREATE TABLE IF NOT EXISTS public.corona_events(
+            id bigserial NOT NULL,
+            extraction_date date,
+            referred_date date,
+            event_description varchar(256),
+            event_location varchar(256),
+            organisation varchar(256),
+            PRIMARY KEY (id)
+        )
+        WITH (
+            OIDS = FALSE
+        );
+        """
+        cur.execute(queryCreate)
+        conn.commit()
+
+        ######
+
+
+
         for item in content:
             query = """
                 INSERT INTO rki_data_germany (state_id, state, sex, province_id, province, object_id, notification_date, death_count, case_count, age_group_start, age_group_end, extraction_date)
