@@ -276,7 +276,7 @@ def create_app():
 
     # GET /get_events
     @app.route("/get_events")
-    def get_total_deceased():
+    def get_events():
         location = request.args.get('location')
         referred_date = request.args.get('publish_date')
         extraction_date = request.args.get('extraction_date')
