@@ -121,7 +121,7 @@ def create_app():
 
         print(dbname, user, password, host)
 
-        conn = psycopg2.connect("dbname='{}' user='{}' host='{}' password='{}'".format(dbname, user, host, password))
+        conn = psycopg2.connect("dbname='{}' user='{}' host='{}'".format(dbname, user, host))
         cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
         selection = {"extraction_date": extraction_date,"state":state, "province":province, "sex": sex, 
