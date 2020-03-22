@@ -57,5 +57,15 @@ management for companies entrepreneurs
 
 **Schlüssel** 0038
 
-**Links zur Zusammenarbeit**
-* https://docs.google.com/spreadsheets/d/1fvDjJNG5-orGQ_hK3Jht88QdtHbhAKJ4qg7g3f_lrGs/edit?usp=sharing
+**Probier es aus**
+Ein paar Beispiele:
+http://35.180.178.217:5000/get_data?state=Bayern
+http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
+http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+http://35.180.178.217:5000/get_events?location=Thüringen
+
+Folgende weitere Parameter für /get_data & /get_totals
+Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date), Datumsbereich (date_range) 
+
+Folgende weitere Parameter für /get_events
+Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
