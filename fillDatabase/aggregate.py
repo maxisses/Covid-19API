@@ -7,7 +7,6 @@ import re
 page_size = 2000
 aggregation_frequency_max = 100
 
-
 def download_data():
     """Downloads data from https://services7.arcgis.com and writes them to the DB """
     print("Let's start ...")
@@ -24,7 +23,6 @@ def download_data():
             break
         write_to_table(cleaned_columns)
         i += 1
-
 
 def cleanup_data(json_files):
     result = []

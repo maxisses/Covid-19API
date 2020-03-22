@@ -232,8 +232,6 @@ def create_app():
         except:
             pass
 
-        
-
         conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
         cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
@@ -276,28 +274,36 @@ def create_app():
     # GET /get_events
     @app.route("/get_events")
     def get_total_deceased():
-        state = request.args.get('state')
-        province = request.args.get('province')
-        sex = request.args.get('type')
-        age_group_start = request.args.get('description')
+        location = request.args.get('location')
+        referred_date = request.args.get('publish_date')
         extraction_date = request.args.get('extraction_date')
-        date_range = request.args.get('date_range')
 
-        date_range_start = None
-        date_range_end = None
-        try:
-            date_range = date_range.split(" ")
-            print(date_range)
-            if len(date_range) > 1:
-                date_range_start = date_range[0]
-                date_range_end = date_range[1]
-            else:
-                date_range_start = date_range[0]
-                date_range_end = date_range[0]
-        except:
-            pass
+        conn = psycopg2.connect("dbname='wirvsvirus' user='wirvsvirus' host='marc-book.de' password='[n2^3kKCyxUGgzuV'")
+        cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
-        return None
+        selection = {"extraction_date": extraction_date, "referred_date": referred_date, "location": location}
+
+        columns = []
+        for key, value in selection.items():
+            columns.append(key)
+        columns = ", ".join(columns)
+        print(columns)
+
+        print(selection)
+        cur.execute(""" SELECT *
+                        FROM corona_events
+                            WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
+                            AND (referred_date = %(referred_date)s OR %(referred_date)s IS NULL )
+                            AND (event_location = %(location)s OR %(location)s IS NULL)
+                            """, 
+                            selection)
+
+        rows = cur.fetchall()
+
+        if len(rows) == 0:
+            return jsonify({"message": "error or no values"})
+        else:
+            return jsonify(rows)
 
 
     #############################

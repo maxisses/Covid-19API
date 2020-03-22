@@ -32,9 +32,9 @@ def scrape_something():
                 try:
                     selected_date = datetime.strptime(str(dates[0]), "%d.%m.%Y").date()
                 except:
-                    selected_date = "unbekannt"
+                    selected_date = None
             else:
-                selected_date = "unbekannt"
+                selected_date = None
                 
         
         foo = re.sub('[^A-Za-zäÄöÖüÜß]+', ' ', h2.text)
@@ -51,20 +51,21 @@ def scrape_something():
             if(entity.label_ == "LOC"):
                 location.append(entity.text)
             else:
-                location.append(numpy.nan)
+                location.append("")
 
             if (entity.label_ == "ORG"):
                 organisation.append(entity.text)
             else:
-                organisation.append(numpy.nan)
+                organisation.append("")
         
-        rows.append([datetime.now(), selected_date, foo, location, organisation])
+        rows.append([datetime.now(), selected_date, foo, " ".join(location), " ".join(organisation)])
 
     df = pd.DataFrame(rows)
     df.columns = ["extraction_date", "referred_date", "description", "location", "organisation"]
     return rows
 
-print(scrape_something())
+
+
 
 
 
