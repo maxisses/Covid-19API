@@ -1,25 +1,27 @@
 # WirVsVirus Challenge
 
-Eine globale und zentrale Datenbank/Datalake mit Schnittstellen APIs
+## Inspiration
+Imagine you are a 
+...mayor
+...news agency
+...researcher
+...analyst
+...anyone making decisions based on the data around Covid-19
 
-## Das Problem
-Wenn Applikationen entwickelt werden um das Virus zu bekämpfen / Informationen zu sammeln, müssen diese Daten der
-Allgemeinheit und weiteren Applikationen zur Verfügung gestellt werden. Wie gelange ich als Entwickler, z.B. einer App.
-zur Prädikation zur Virusausbreitung, an Daten für die Applikation? Wo kann ich die Daten die meine App. sammelt
-hochladen und anderen Entwicklern oder Statistikern zur Verfügung stellen?	
+and you need & want REALTIME access to all Covid-19 related facts <i>and<i> news for your area, focus group, age group.
+But it is spread around, locked-up in dashboards, tables, charts or images.
 
-## Der Lösungsansatz
-Ein zentraler Datalake / eine zentrale Datenbank auf den/die Informationen oder Daten des Virus von Applikationen
-geladen werden. Dieser Datalake hat wiederum Application Programm Interfaces (APIs) um die Daten an weitere
-Applikationen zu verteilen.
+## What it does
+Built on the data from RKI Germany we provide an API that can be tailored to your needs. 
+Built your query once - receive the latest data everyday.
 
-**Probier es aus**
-Ein paar Beispiele:
+##Try it out
+A few examples:
 
-* http://35.180.178.217:5000/get_data?state=Bayern
-* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
-* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
-* http://35.180.178.217:5000/get_events?location=Thüringen
+* https://leimdencapi.eu-de.mybluemix.net/get_data?state=Bayern
+* https://leimdencapi.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
+* https://leimdencapi.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+* https://leimdencapi.eu-de.mybluemix.net/get_events?location=Thüringen
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
@@ -28,20 +30,25 @@ Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 Folgende weitere Parameter für /get_events sind verfügbar:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
 
-# WirVsVirus Challenge
-A global and central database/datalake accessible through an API
+## How I built it
+Postg
+resql, Python Flask, Ansible, Spacy, NLP, BeautifulSoup
 
-## The Problem
-If applications are developed to fight the virus / collect information, this data must be made available to the general
-public and other applications. How do I as a developer, e.g. of an app for predicting the spread of a virus, obtain data
-for the application? Where can I upload the data that my app collects and make it available to other developers or
-statisticians?
+## Challenges I ran into
+Data, Data, Data ... the data is so hard to gather in a good quality.
 
-## The Solution
-A Central Datalake / Central Database where this information or virus data can be uploaded from applications. This datalake in turn has application program interfaces to distribute the data to other applications.
+## Accomplishments that I'm proud of
+We think that maaaany digital applications (whether its a news agency providing you daily charts or a political staff member providing the daily executive report for its official) can benefit from this. And while our solution can underpin many of those, we are proud that it is not only pure numbers we are providing but we also try to correlate this with events around the crisis on a local level.
 
-##### Tags
-*0038_Daten: Wie können wir Daten besser aufbereiten und nutzen?*
+## What I learned
+My Hypothesis was: there is no easy access to large scale Covid-19 data
+...turned out its true.
+And some fun new technology and how to built an API and dynamic SQL :)
+
+## What's next for CoVid-19-API
+In the future we want to be able to aggregate news information on the COVID-19 virus from reliable sources while avoiding duplicates. Furthermore, we ourselves want to be able to publish some metrics/correlations from the data we gathered. At a later time, if the API is a success, we plan to have it reside inside a kubernetes cluster to ensure availability and scalability.
+
+**Forks and merge requests are highly welcome!**
 
 **Challenge ID** 0193	
 
