@@ -23,7 +23,7 @@ Ein paar Beispiele:
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
-* Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
+* Bundesland(state), Landkreis(province mit SK oder LK vorne), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
 
 Folgende weitere Parameter für /get_events sind verfügbar:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
@@ -46,22 +46,6 @@ A Central Datalake / Central Database where this information or virus data can b
 **Challenge ID** 0193	
 
 **Schlüssel** 0038
-
-**Probier es aus**
-Ein paar Beispiele:
-
-* http://35.180.178.217:5000/get_data?state=Bayern
-* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
-* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
-* http://35.180.178.217:5000/get_events?location=Thüringen
-
-Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
-
-* Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
-
-Folgende weitere Parameter für /get_events sind verfügbar:
-* Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
-
 
 Verfügbare Landkreise:
 * 'SK Flensburg', 'SK Kiel', 'SK Lübeck', 'SK Neumünster',
