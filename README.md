@@ -13,17 +13,20 @@ Ein zentraler Datalake / eine zentrale Datenbank auf den/die Informationen oder 
 geladen werden. Dieser Datalake hat wiederum Application Programm Interfaces (APIs) um die Daten an weitere
 Applikationen zu verteilen.
 
-## Beispiel
-Ich habe eine App entwickelt, die Menschen mit Symptomen erfasst und deren Geolocation. Ein anderer Entwickler oder
-Wissenschaftler möchte diese Daten verwenden um eine Applikation zu bauen um die Virusausbreitung darzustellen /
-vorherzusagen. Deshalb greift der andere Entwickler / Wissenschaftler auf die zentrale Datenbank zu. Die Daten zur
-Verbreitungsprädiktion lädt der Entwickler wiederum in den Datalake hoch und stellt sie anderen zur Verfügung:
-* [Zentrale Datenbank für Papers](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/global-research-on-novel-coronavirus-2019-ncov)
-* [Datensätze zum Virus](https://www.kaggle.com/tags/covid19)
-* Kommunikation & Informationsvermittlung an Bürger*innen, Prävention von Verbreitung des COVID-19, Deutsche Wirtschaft,
-Krisenmanagement für Unternehmen & Selbstständige
-* Allen Entwicklern, offiziellen Stellen und Applikationen die mit Daten über das Virus arbeiten.
-* Entwickler, Statistiker
+**Probier es aus**
+Ein paar Beispiele:
+
+* http://35.180.178.217:5000/get_data?state=Bayern
+* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
+* http://35.180.178.217:5000/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+* http://35.180.178.217:5000/get_events?location=Thüringen
+
+Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
+
+* Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
+
+Folgende weitere Parameter für /get_events sind verfügbar:
+* Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
 
 # WirVsVirus Challenge
 A global and central database/datalake accessible through an API
@@ -35,20 +38,7 @@ for the application? Where can I upload the data that my app collects and make i
 statisticians?
 
 ## The Solution
-A Central Datalake / Central Database where this information or virus data can be uploaded from applications. This
-datalake in turn has application program interfaces to distribute the data to other applications.
-
-## Example
-I developed an app that registers people with symptoms and their geolocation. Another developer or scientist wants to
-use these data to build an application to visualize/predict the spread of the virus. Thereafter, the other
-developer/scientist is able to access this central database and can push his own data in return.
-
-* [Central Paper Database](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/global-research-on-novel-coronavirus-2019-ncov)
-* [Datasets on the Virus](https://www.kaggle.com/tags/covid19)
-* Communication and Information Distribution to citizens, prevention of spread of COVID-19, German economy, crisis
-management for companies entrepreneurs
-* all developers, officials, and applications that work with data on the virus
-* developers, statisticians
+A Central Datalake / Central Database where this information or virus data can be uploaded from applications. This datalake in turn has application program interfaces to distribute the data to other applications.
 
 ##### Tags
 *0038_Daten: Wie können wir Daten besser aufbereiten und nutzen?*
@@ -67,7 +57,7 @@ Ein paar Beispiele:
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
-* Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date), Datumsbereich (date_range) 
+* Bundesland(state), Landkreis(province), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
 
 Folgende weitere Parameter für /get_events sind verfügbar:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
