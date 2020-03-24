@@ -1,4 +1,6 @@
-# WirVsVirus Challenge
+# WirVsVirus Challenge - Team "LEIMdenC-API"
+
+![Intro](public/LEIMDENCAPI.png)
 
 ## Inspiration
 Imagine you are a 
@@ -18,7 +20,7 @@ Built your query once - receive the latest data everyday.
 ##Try it out
 A few examples:
 
-* https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern
+* https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern&extraction_date=2020-03-24
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
 * https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen
@@ -32,7 +34,7 @@ Folgende weitere Parameter für /get_events sind verfügbar:
 
 ## How I built it
 Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
-![Basic Architecture](LEIMDENCAPI.png)
+![Intro](public/architecture.png)
 
 ## Challenges I ran into
 Data, Data, Data ... the data is so hard to gather in a good quality.
