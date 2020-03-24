@@ -58,10 +58,6 @@ My Hypothesis was: there is no easy access to large scale Covid-19 data
 ...turned out its true.
 And some fun new technology and how to built an API and dynamic SQL :)
 
-## Steps to deploy yourself
-
-You can [deploy this application to IBM Cloud](https://cloud.ibm.com/developer/appservice/) or [build it locally](#building-locally) by cloning this repo first. Once the app is live, you can access the `/health` endpoint to check if its up. You'll have to bring your own DB and deploy the filldbscripts in the scripts folder to a functions / serverless.
-
 ## What's next for CoVid-19-API
 In the future we want to be able to aggregate news information on the COVID-19 virus from reliable sources while avoiding duplicates. Furthermore, we ourselves want to be able to publish some metrics/correlations from the data we gathered. At a later time, if the API is a success, we plan to have it reside inside a kubernetes cluster to ensure availability and scalability.
 
