@@ -1,7 +1,0 @@
-BeautifulSoup
-re
-spacy
-numpy
-pandas
-datetime
-requests

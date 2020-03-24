@@ -1,6 +1,0 @@
----
-- hosts: all
-  remote_user: user #TODO
-  become_user: root
-  roles:
-    - role: cron-job

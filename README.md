@@ -18,10 +18,10 @@ Built your query once - receive the latest data everyday.
 ##Try it out
 A few examples:
 
-* https://leimdencapi.eu-de.mybluemix.net/get_data?state=Bayern
-* https://leimdencapi.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
-* https://leimdencapi.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
-* https://leimdencapi.eu-de.mybluemix.net/get_events?location=Thüringen
+* https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+* https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
@@ -31,8 +31,8 @@ Folgende weitere Parameter für /get_events sind verfügbar:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
 
 ## How I built it
-Postg
-resql, Python Flask, Ansible, Spacy, NLP, BeautifulSoup
+Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
+<img src="https://img.shields.io/badge/platform-python-lightgrey.svg?style=flat" alt="platform">
 
 ## Challenges I ran into
 Data, Data, Data ... the data is so hard to gather in a good quality.
@@ -44,6 +44,10 @@ We think that maaaany digital applications (whether its a news agency providing 
 My Hypothesis was: there is no easy access to large scale Covid-19 data
 ...turned out its true.
 And some fun new technology and how to built an API and dynamic SQL :)
+
+## Steps to deploy yourself
+
+You can [deploy this application to IBM Cloud](https://cloud.ibm.com/developer/appservice/) or [build it locally](#building-locally) by cloning this repo first. Once the app is live, you can access the `/health` endpoint to check if its up. You'll have to bring your own DB and deploy the filldbscripts in the scripts folder to a functions / serverless.
 
 ## What's next for CoVid-19-API
 In the future we want to be able to aggregate news information on the COVID-19 virus from reliable sources while avoiding duplicates. Furthermore, we ourselves want to be able to publish some metrics/correlations from the data we gathered. At a later time, if the API is a success, we plan to have it reside inside a kubernetes cluster to ensure availability and scalability.
@@ -183,3 +187,10 @@ Verfügbare Landkreise:
        'LK Sonneberg', 'LK Saalfeld-Rudolstadt',
        'LK Saale-Holzland-Kreis', 'LK Saale-Orla-Kreis', 'LK Greiz',
        'LK Altenburger Land'
+       
+## License
+
+This application is licensed under the Apache License, Version 2. Separate third-party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+[Apache License FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+
