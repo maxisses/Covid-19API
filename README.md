@@ -20,16 +20,26 @@ Built your query once - receive the latest data everyday.
 ##Try it out
 A few examples:
 
-* https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern&extraction_date=2020-03-24
+
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
-* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Thüringen&date_range=2020-03-12 2020-03-21&province=SK München&sex=M
+* https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern&extraction_date=2020-03-24&province=SK München
 * https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
-* Bundesland(state), Landkreis(province mit SK oder LK vorne), Geschlecht(sex), Alter von(age_group_start), Alter bis(age_group_end), Abrufdatum(extraction_date YYYY-MM-DD), Datumsbereich (date_range YYYY-MM-DD YYYY-MM-DD) 
+* state = Bundesland, alle 16 in Deutsch
+* province = Landkreis, geführt mit SK(Stadtkreis) oder LK(Landkreis) - komplette Liste (Stand 23.03.2020) unten
+* sex = Geschlecht
+* age_group_start = Alter von
+* age_group_end = Alter bis
+* extraction_date = Abrufdatum in YYYY-MM-DD, jeden Tag wird ein kompletter Update gemacht und der alte erhalten, sodass auch Ältere Datensätze abgefragt werden können; weglassen setzt automatisch auf heute; erster Abruf am 23.03.2020
+* date_range = Zeitraum von - bis anzugeben als YYYY-MM-DD YYYY-MM-DD (StartdatumLEERZEICHENEnddatum)
+* Landkreis(province mit SK oder LK vorne), Geschlecht(sex), Alter von(age_group_start), Alter bis 
 
-Folgende weitere Parameter für /get_events sind verfügbar:
+Auf /get_totals werden bei Angabe einer date_range dann auch Differenzen (Wieviele kamen dazu) gebildet und ausgegeben.
+
+Folgende weitere Parameter für /get_events sind verfügbar, hier müssen die Daten nochmal überarbeitet werden, update folgt:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
 
 ## How I built it
