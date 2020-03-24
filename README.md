@@ -20,11 +20,12 @@ Built your query once - receive the latest data everyday.
 ##Try it out
 A few examples:
 
-
-* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21
-* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Thüringen&date_range=2020-03-12 2020-03-21&province=SK München&sex=M
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
+* https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Hamburg&date_range=2020-03-12 2020-03-21&sex=M
 * https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern&extraction_date=2020-03-24&province=SK München
-* https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen
+* https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen (currently under construction)
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
