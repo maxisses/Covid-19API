@@ -32,7 +32,7 @@ Folgende weitere Parameter für /get_events sind verfügbar:
 
 ## How I built it
 Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
-![Basic Architecture]("LEIMDENCAPI.png")
+![Basic Architecture](LEIMDENCAPI.png)
 
 ## Challenges I ran into
 Data, Data, Data ... the data is so hard to gather in a good quality.
