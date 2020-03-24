@@ -43,17 +43,17 @@ Auf /get_totals werden bei Angabe einer date_range dann auch Differenzen (Wievie
 Folgende weitere Parameter für /get_events sind verfügbar, hier müssen die Daten nochmal überarbeitet werden, update folgt:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
 
-## How I built it
+## How we built it
 Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
 ![Intro](public/architecture.png)
 
-## Challenges I ran into
+## Challenges we ran into
 Data, Data, Data ... the data is so hard to gather in a good quality.
 
-## Accomplishments that I'm proud of
+## Accomplishments that we are proud of
 We think that maaaany digital applications (whether its a news agency providing you daily charts or a political staff member providing the daily executive report for its official) can benefit from this. And while our solution can underpin many of those, we are proud that it is not only pure numbers we are providing but we also try to correlate this with events around the crisis on a local level.
 
-## What I learned
+## What We learned
 My Hypothesis was: there is no easy access to large scale Covid-19 data
 ...turned out its true.
 And some fun new technology and how to built an API and dynamic SQL :)
