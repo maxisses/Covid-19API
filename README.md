@@ -13,10 +13,12 @@ But it is spread around, locked-up in dashboards, tables, charts or images.
 
 ## What it does
 Built on the data from RKI Germany we provide an API that can be tailored to your needs. 
-Built your query once - receive the latest data everyday.
-Compare here : https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4
+Built your query once - receive the currently reported data from RKI.
+Compare here for correctness (correctness can in no way be guaranteed if data provisioning from RKI changes!!): https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4
 
-##Try it out
+RKI Data gets usually refreshed 8:15am (https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html), to allow for some room the API refreshes 9am.
+
+## Try it out
 A few examples:
 
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals
