@@ -1,7 +1,5 @@
 # WirVsVirus Challenge - Team "LEIMdenC-API"
 
-![Intro](public/LEIMDENCAPI.png)
-
 ## Inspiration
 Imagine you are a 
 ...mayor
@@ -16,6 +14,7 @@ But it is spread around, locked-up in dashboards, tables, charts or images.
 ## What it does
 Built on the data from RKI Germany we provide an API that can be tailored to your needs. 
 Built your query once - receive the latest data everyday.
+Compare here : https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4
 
 ##Try it out
 A few examples:
