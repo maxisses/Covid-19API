@@ -35,11 +35,13 @@ Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 * sex = Geschlecht
 * age_group_start = Alter von
 * age_group_end = Alter bis
-* extraction_date = Abrufdatum in YYYY-MM-DD, jeden Tag wird ein kompletter Update gemacht und der alte erhalten, sodass auch Ältere Datensätze abgefragt werden können; weglassen setzt automatisch auf heute; erster Abruf am 23.03.2020
+* extraction_date = Abrufdatum in YYYY-MM-DD, jeden Tag wird ein kompletter Update gemacht und der alte erhalten, sodass auch Ältere Datensätze abgefragt werden können; weglassen setzt automatisch auf heute; erster Abruf am 26.03.2020
 * date_range = Zeitraum von - bis anzugeben als YYYY-MM-DD YYYY-MM-DD (StartdatumLEERZEICHENEnddatum)
-* Landkreis(province mit SK oder LK vorne), Geschlecht(sex), Alter von(age_group_start), Alter bis 
+* province = Landkreis(province mit SK oder LK vorne), 
+* sex = Geschlecht(M oder W), 
+* age_group_start = Altersgrenze unten (beachte die Altersgruppen des RKI, nur innerhalb dieser wird gruppiert)
+* age_group_end = Altersgrenze oben (beachte die Altersgruppen des RKI, nur innerhalb dieser wird gruppiert)
 
-Auf /get_totals werden bei Angabe einer date_range dann auch Differenzen (Wieviele kamen dazu) gebildet und ausgegeben.
 
 Folgende weitere Parameter für /get_events sind verfügbar, hier müssen die Daten nochmal überarbeitet werden, update folgt:
 * Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
