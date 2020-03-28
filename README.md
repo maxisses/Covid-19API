@@ -26,7 +26,8 @@ A few examples:
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Bayern&date_range=2020-03-12 2020-03-21&province=SK München
 * https://covid19-germany-api.eu-de.mybluemix.net/get_totals?state=Hamburg&date_range=2020-03-12 2020-03-21&sex=M
 * https://covid19-germany-api.eu-de.mybluemix.net/get_data?state=Bayern&extraction_date=2020-03-24&province=SK München
-* https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen (currently under construction)
+* https://covid19-germany-api.eu-de.mybluemix.net/get_events?location=Thüringen
+* https://covid19-germany-api.eu-de.mybluemix.net/get_events?date_range=2020-03-23%202020-03-27
 
 Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 
@@ -43,8 +44,8 @@ Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 * age_group_end = Altersgrenze oben (beachte die Altersgruppen des RKI, nur innerhalb dieser wird gruppiert)
 
 
-Folgende weitere Parameter für /get_events sind verfügbar, hier müssen die Daten nochmal überarbeitet werden, update folgt:
-* Ort (location), Bezugsdaten (publish_date), Abrufdaten (extraction_date)
+Folgende weitere Parameter für /get_events sind verfügbar, Datenbasis ist der Corono-Newsticker der Tagesschau:
+* genannte Orte (location), Veröffentlichung (date_range YYYY-MM-DD YYYY-MM-DD), Abrufdatum (extraction_date), Artikelstichwortfilter (content), Titelstichwortfiler (title), genannte Organisationen (organization), genannte Personen (person)
 
 ## How we built it
 Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
