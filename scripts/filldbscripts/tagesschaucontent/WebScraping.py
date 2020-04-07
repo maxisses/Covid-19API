@@ -24,13 +24,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def check_scraped_urls(dbparams):
+def check_scraped_urls(params):
 
-    dbname = dbparams.get('DB_DATABASE')
-    dbuser = dbparams.get('DB_USER')
-    dbpassword = dbparams.get('DB_PASSWORD')
-    dbhost = dbparams.get('DB_HOST')
-    dbport = dbparams.get('DB_PORT')
+    dbname = params.get('DB_DATABASE')
+    dbuser = params.get('DB_USER')
+    dbpassword = params.get('DB_PASSWORD')
+    dbhost = params.get('DB_HOST')
+    dbport = params.get('DB_PORT')
 
     conn = None
     try:
@@ -174,7 +174,9 @@ def get_news(url):
     print("--- gathered all loaded entries content ---") 
     return titles, dates, contents, url
 
-def fetch_meta_create_df(titles, dates, contents, url, current_date):
+def fetch_meta_create_df(titles, dates, contents, url, current_date, params):
+
+    ibmapikey = params.get('IBM_API_KEY')
     authenticator = IAMAuthenticator('NQntjlNUfMEKASwXHQY32rB9BPjEE7-gbBAEE0mWGPcv')
     natural_language_understanding = NaturalLanguageUnderstandingV1(
         version='2019-07-12',
@@ -225,13 +227,13 @@ def fetch_meta_create_df(titles, dates, contents, url, current_date):
 
 
 
-def write_to_db(table_columns, dbparams):
+def write_to_db(table_columns, params):
 
-    dbname = dbparams.get('DB_DATABASE')
-    dbuser = dbparams.get('DB_USER')
-    dbpassword = dbparams.get('DB_PASSWORD')
-    dbhost = dbparams.get('DB_HOST')
-    dbport = dbparams.get('DB_PORT')
+    dbname = params.get('DB_DATABASE')
+    dbuser = params.get('DB_USER')
+    dbpassword = params.get('DB_PASSWORD')
+    dbhost = params.get('DB_HOST')
+    dbport = params.get('DB_PORT')
 
     tuples = tuple(map(tuple, zip(*table_columns)))
 
@@ -263,16 +265,15 @@ def write_to_db(table_columns, dbparams):
             conn.close()
 
 
-def run_scraper(url, current_date):
+def run_scraper(url, current_date, params):
     titles, dates, contents, url = get_news(url)
-    active_df = fetch_meta_create_df(titles, dates, contents, url, current_date)
+    active_df = fetch_meta_create_df(titles, dates, contents, url, current_date, params)
     write_to_db(active_df)
 
 
-
-def run_all(dbparams):
+def run_all(params):
     print("--- starting the webscraper script ---")
-    already_scraped_urls = check_scraped_urls(dbparams) 
+    already_scraped_urls = check_scraped_urls(params) 
     urls, current_dates = get_active_urls()
     i = 0
     untouched_urls = []
@@ -293,12 +294,12 @@ def run_all(dbparams):
             print(f"Let's wait till tomorrow to scrape {url} because its todays liveblog {current_date}")
         else: 
             print(f"lets scrape {url} with {current_date}")
-            run_scraper(url, current_date)
+            run_scraper(url, current_date, params)
         print(f"||| finished with the {i}. url |||")
     print("--- all set and done ---")
 
 if __name__ == '__main__':
-    my_dbparams_file=sys.argv[1]
-    with open(my_dbparams_file) as json_file:
-        dbparams = json.load(json_file)
-    run_all(dbparams)
+    my_params_file=sys.argv[1]
+    with open(my_params_file) as json_file:
+        params = json.load(json_file)
+    run_all(params)
