@@ -1,0 +1,25 @@
+version: "3.6"
+services:
+  chrome:
+    image: selenium/node-chrome:3.14.0-gallium
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+
+  hub:
+    image: selenium/hub:3.14.0-gallium
+    ports:
+      - "4444:4444"
+
+ # webscraper:
+  #  restart: always
+   # build: .
+    #container_name: webscraper
+    #command: python WebScraping.py
+    #links: 
+    #        - "hub:hub"
+
+    
