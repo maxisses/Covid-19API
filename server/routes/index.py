@@ -12,14 +12,17 @@ def handle_extraction_date(date):
         if date:
             return date
         else:
-            date = datetime.now().strftime('%Y-%m-%d')
-            #date = "2020-03-21"
-            print("set extraction date to today: " + str(date))
-            return date
+            if int(datetime.utcnow().strftime('%H')) >= 7:
+                date = datetime.utcnow().strftime('%Y-%m-%d')
+                print("set extraction date to today: " + str(date))
+                return date
+            else:
+                date = (datetime.utcnow()-timedelta(1)).strftime('%Y-%m-%d')
+                print("set extraction date to today: " + str(date))
+                return date
 
 def connect_to_db():
     dbname = os.getenv('DB_DATABASE')
-    print("here ist the first envvar with getenv: " + str(dbname))
     dbuser = os.getenv('DB_USER')
     dbpassword = os.getenv('DB_PASSWORD')
     dbhost = os.getenv('DB_HOST')
@@ -31,6 +34,7 @@ def connect_to_db():
         cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+        print("connection to db failed")
 
     return cur
 
@@ -68,15 +72,26 @@ def get_totals():
     date_range_end = None
     try:
         date_range = date_range.split(" ")
-        print("fetching the diff between two dates: " + " ".join(date_range))
+        print("date_range len: " + str(len(date_range)))
+        print("fetching the diff between two dates: " + " ".join(date_range))      
         if len(date_range) > 1:
             date_range_start = date_range[0]
-            date_range_end = date_range[1]
+            date_range_end = (datetime.strptime(date_range[1], '%Y-%m-%d') - timedelta(1)).strftime('%Y-%m-%d')
+            print("1 - daterangeend: "+ str(date_range_end))
         else:
-            date_range_start = date_range[0]
-            date_range_end = date_range[0]
+            date_range_start = (datetime.strptime(date_range[0], '%Y-%m-%d') - timedelta(1)).strftime('%Y-%m-%d')
+            date_range_end = (datetime.strptime(date_range[0], '%Y-%m-%d') - timedelta(1)).strftime('%Y-%m-%d')
+            print(f"2 - daterangeend: {str(date_range_end)}")
     except:
-        pass
+        if extraction_date:
+            date_range_end = extraction_date
+        else:
+            if int(datetime.utcnow().strftime('%H')) >= 7:
+                date_range_end = datetime.utcnow().strftime('%Y-%m-%d')
+                print("set date_range_end date to today: " + str(date_range_end))
+            else:
+                date_range_end = (datetime.utcnow()-timedelta(1)).strftime('%Y-%m-%d')
+                print("set extraction date to today: " + str(date_range_end))
 
     cur = connect_to_db()
 
@@ -88,15 +103,15 @@ def get_totals():
         if value:
             columns.append(key)
     columns = ", ".join(columns)
-    print(columns)
+    #print(columns)
 
     
     selection["date_range_start"] = date_range_start
     selection["date_range_end"] = date_range_end
 
-            ### get the numbers for the end
+    ### get the numbers for the end
     cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
-                    FROM rki_data_germany8 
+                    FROM rki_data_germany_refresh 
                         WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
                         AND (state = %(state)s OR %(state)s IS NULL )
                         AND (province = %(province)s OR %(province)s IS NULL)
@@ -109,23 +124,8 @@ def get_totals():
 
     rows_end = cur.fetchall()
 
-    ### get the numbers for the start date
-    cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
-                    FROM rki_data_germany8 
-                        WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
-                        AND (state = %(state)s OR %(state)s IS NULL )
-                        AND (province = %(province)s OR %(province)s IS NULL)
-                        AND (sex = %(sex)s OR %(sex)s IS NULL)
-                        AND (age_group_start >= %(age_group_start)s OR %(age_group_start)s IS NULL)
-                        AND (age_group_end <= %(age_group_end)s OR %(age_group_end)s IS NULL)
-                        AND ((notification_date <= %(date_range_start)s) OR %(date_range_start)s IS NULL)
-                        GROUP BY {}""".format(columns, columns), 
-                        selection)
-
-    rows_start = cur.fetchall()
-
-    cur.execute(""" SELECT {} , sum(case_count) AS infected, sum(death_count) AS deceased
-                    FROM rki_data_germany8 
+    cur.execute(""" SELECT {} , sum(case_count) AS infected_in_range, sum(death_count) AS deceased_in_range
+                    FROM rki_data_germany_refresh 
                         WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
                         AND (state = %(state)s OR %(state)s IS NULL )
                         AND (province = %(province)s OR %(province)s IS NULL)
@@ -139,16 +139,27 @@ def get_totals():
     rows = cur.fetchall()
 
     if len(rows) == 0:
-        return jsonify({"message": "error or no values"})
+        return jsonify({"message": "error or no values"}), 404
     else:
-        if date_range_start:
-            print(rows_end[0]["infected"])
-            print(rows_start[0]["infected"])
-            rows[0]["diff_infected"] =  rows_end[0]["infected"] - rows_start[0]["infected"]
-            rows[0]["diff_deceased"] =  rows_end[0]["deceased"] - rows_start[0]["deceased"]
-            rows[0]["from"] = date_range_start
-            rows[0]["to"] = date_range_end
-        return jsonify(rows)
+        if date_range_end:
+            #print(rows_end[0]["infected"])
+            rows[0]["total_infected"] =  rows_end[0]["infected"]
+            rows[0]["total_deceased"] =  rows_end[0]["deceased"]
+            try:
+                rows[0]["from"] = (datetime.strptime(date_range_start, '%Y-%m-%d') + timedelta(1)).strftime('%Y-%m-%d')
+                rows[0]["to"] = (datetime.strptime(date_range_end, '%Y-%m-%d') + timedelta(1)).strftime('%Y-%m-%d')
+            except:
+                rows[0]["from"] = None
+                rows[0]["to"] = date_range_end
+            rows[0]["meta"] = {
+                "source URL(paginated)": "https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?f=json&where=1%3D1&outFields=*&resultOffset=0",
+                "source": "RKI Germany",
+                "origin": "WirVsVirusHackathon - find the Team here: https://devpost.com/software/covid-19-api",
+                "reference": "https://github.com/maxisses/Covid-19API",
+                "maintainer": "Max Dargatz <max_dargatz@hotmail.com>"
+            }
+        
+        return jsonify(rows[0])
 
 # GET /get_data
 @app.route("/get_data")
@@ -178,7 +189,6 @@ def get_data():
     date_range_end = None
     try:
         date_range = date_range.split(" ")
-        print(date_range)
         if len(date_range) > 1:
             date_range_start = date_range[0]
             date_range_end = date_range[1]
@@ -204,7 +214,7 @@ def get_data():
 
     print(selection)
     cur.execute(""" SELECT {} ,notification_date AS reported, case_count AS infected, death_count AS deceased
-                    FROM rki_data_germany8 
+                    FROM rki_data_germany_refresh
                         WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
                         AND (state = %(state)s OR %(state)s IS NULL )
                         AND (province = %(province)s OR %(province)s IS NULL)
@@ -218,7 +228,7 @@ def get_data():
     rows = cur.fetchall()
 
     if len(rows) == 0:
-        return jsonify({"message": "error or no values"})
+        return jsonify({"message": "error or no values"}), 404
     else:
         if date_range_start:
             for row in rows:
@@ -229,13 +239,58 @@ def get_data():
 # GET /get_events
 @app.route("/get_events")
 def get_events():
-    location = request.args.get('location')
-    referred_date = request.args.get('publish_date')
+    locations = request.args.get('location')
+    title = request.args.get('title')
+    content = request.args.get('content')
+    persons = request.args.get('person')
+    organizations = request.args.get('organization')
+    date_range = request.args.get('date_range')
     extraction_date = request.args.get('extraction_date')
 
-    cur = connect_to_db()
+    #extraction_date = handle_extraction_date(extraction_date)
 
-    selection = {"extraction_date": extraction_date, "referred_date": referred_date, "location": location}
+    date_range_start = None
+    date_range_end = None
+    try:
+        date_range = date_range.split(" ")
+        print("fetching the diff between two dates: " + " ".join(date_range))
+        if len(date_range) > 1:
+            date_range_start = date_range[0]
+            date_range_end = date_range[1]
+        else:
+            date_range_start = date_range[0]
+            date_range_end = date_range[0]
+    except:
+        if extraction_date:
+            date_range_end = extraction_date
+        else:
+            if int(datetime.utcnow().strftime('%H')) >= 7:
+                date_range_end = datetime.utcnow().strftime('%Y-%m-%d')
+                print("set date_range_end date to today: " + str(date_range_end))
+            else:
+                date_range_end = (datetime.utcnow()-timedelta(1)).strftime('%Y-%m-%d')
+                print("set extraction date to today: " + str(date_range_end))
+
+    cur = connect_to_db()
+    
+    ## to make the LIKE statement work this is neccessary
+    if locations:
+        locations = "%" + locations + "%"
+
+    if organizations:
+        organizations = "%" + organizations + "%"
+    
+    if persons:
+        persons = "%" + persons + "%"
+    
+    if title:
+        title = "%" + title + "%"
+
+    if content:
+        content = "%" + content + "%"
+    
+
+    selection = {"title": title, "content": content, "extraction_date": extraction_date,"locations":locations, "persons":persons, "organizations": organizations}
 
     columns = []
     for key, value in selection.items():
@@ -243,20 +298,30 @@ def get_events():
     columns = ", ".join(columns)
     print(columns)
 
+    selection["date_range_start"] = date_range_start
+    selection["date_range_end"] = date_range_end
+
     print(selection)
-    cur.execute(""" SELECT *
-                    FROM corona_events
-                        WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL )
-                        AND (referred_date = %(referred_date)s OR %(referred_date)s IS NULL )
-                        AND (event_location = %(location)s OR %(location)s IS NULL)
+    cur.execute(""" SELECT publish_date, title, content, locations, organizations, persons, extraction_date, news_url FROM corona_events_tagesschau
+                        WHERE (extraction_date = %(extraction_date)s OR %(extraction_date)s IS NULL)
+                        AND ((publish_date BETWEEN %(date_range_start)s AND %(date_range_end)s) OR %(date_range_start)s IS NULL)
+                        AND (locations LIKE %(locations)s OR %(locations)s IS NULL)
+                        AND (organizations LIKE %(organizations)s OR %(organizations)s IS NULL)
+                        AND (persons LIKE %(persons)s OR %(persons)s IS NULL)
+                        AND (title LIKE %(title)s OR %(title)s IS NULL)
+                        AND (content LIKE %(content)s OR %(content)s IS NULL)
                         """, 
                         selection)
 
     rows = cur.fetchall()
 
     if len(rows) == 0:
-        return jsonify({"message": "error or no values"})
+        return jsonify({"message": "error or no values"}), 404
     else:
+        if date_range_start:
+            for row in rows:
+                row["from"] = date_range_start
+                row["to"] = date_range_end
         return jsonify(rows)
 
     #############################

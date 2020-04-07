@@ -1,5 +1,7 @@
 # WirVsVirus Challenge - Team "LEIMdenC-API"
 
+![Intro](public/LEIMDENCAPI.png)
+
 ## Inspiration
 Imagine you are a 
 ...mayor
@@ -13,10 +15,7 @@ But it is spread around, locked-up in dashboards, tables, charts or images.
 
 ## What it does
 Built on the data from RKI Germany we provide an API that can be tailored to your needs. 
-Built your query once - receive the currently reported data from RKI.
-Compare here for correctness (correctness can in no way be guaranteed if data provisioning from RKI changes!!): https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4
-
-RKI Data gets usually refreshed 8:15am (https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html), to allow for some room the API refreshes 9am.
+Built your query once - receive the latest data everyday.
 
 ## Try it out
 A few examples:
@@ -47,20 +46,24 @@ Folgende weitere Parameter für /get_data & /get_totals sind verfügbar:
 Folgende weitere Parameter für /get_events sind verfügbar, Datenbasis ist der Corono-Newsticker der Tagesschau:
 * genannte Orte (location), Veröffentlichung (date_range YYYY-MM-DD YYYY-MM-DD), Abrufdatum (extraction_date), Artikelstichwortfilter (content), Titelstichwortfiler (title), genannte Organisationen (organization), genannte Personen (person)
 
-## How we built it
+## How I built it
 Postgresql, Python Flask, Cloud Functions, Watson NLU, BeautifulSoup
 ![Intro](public/architecture.png)
 
-## Challenges we ran into
+## Challenges I ran into
 Data, Data, Data ... the data is so hard to gather in a good quality.
 
-## Accomplishments that we are proud of
+## Accomplishments that I'm proud of
 We think that maaaany digital applications (whether its a news agency providing you daily charts or a political staff member providing the daily executive report for its official) can benefit from this. And while our solution can underpin many of those, we are proud that it is not only pure numbers we are providing but we also try to correlate this with events around the crisis on a local level.
 
-## What We learned
+## What I learned
 My Hypothesis was: there is no easy access to large scale Covid-19 data
 ...turned out its true.
 And some fun new technology and how to built an API and dynamic SQL :)
+
+## Steps to deploy yourself
+
+You can [deploy this application to IBM Cloud](https://cloud.ibm.com/developer/appservice/) or [build it locally](#building-locally) by cloning this repo first. Once the app is live, you can access the `/health` endpoint to check if its up. You'll have to bring your own DB and deploy the filldbscripts in the scripts folder to a functions / serverless.
 
 ## What's next for CoVid-19-API
 In the future we want to be able to aggregate news information on the COVID-19 virus from reliable sources while avoiding duplicates. Furthermore, we ourselves want to be able to publish some metrics/correlations from the data we gathered. At a later time, if the API is a success, we plan to have it reside inside a kubernetes cluster to ensure availability and scalability.
